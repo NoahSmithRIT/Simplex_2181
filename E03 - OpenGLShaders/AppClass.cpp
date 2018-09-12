@@ -83,6 +83,18 @@ void AppClass::InitVariables(void)
 	lVertex.push_back(glm::vec3(0.0f, 1.0f, 0.0f)); //position
 	lVertex.push_back(glm::vec3(0.0f, 0.0f, 1.0f)); //color
 	
+	// initialize complementary colors
+	std::vector<glm::vec3> cVertex;
+	//vertex 1
+	cVertex.push_back(glm::vec3(-1.0f, -1.0f, 0.0f)); //position
+	cVertex.push_back(glm::vec3(0.0f, 1.0f, 1.0f)); //color
+	//vertex 2
+	cVertex.push_back(glm::vec3(1.0f, -1.0f, 0.0f)); //position
+	cVertex.push_back(glm::vec3(1.0f, 0.0f, 1.0f)); //color
+	//vertex 3
+	cVertex.push_back(glm::vec3(0.0f, 1.0f, 0.0f)); //position
+	cVertex.push_back(glm::vec3(1.0f, 1.0f, 0.0f)); //color
+	
 	glGenVertexArrays(1, &m_uVAO);//Generate vertex array object
 	glGenBuffers(1, &m_uVBO);//Generate Vertex Buffered Object
 
@@ -90,7 +102,10 @@ void AppClass::InitVariables(void)
 	glBindBuffer(GL_ARRAY_BUFFER, m_uVBO);//Bind the VBO
 
 	//Generate space for the VBO (vertex count times size of vec3)
-	glBufferData(GL_ARRAY_BUFFER, lVertex.size() * sizeof(glm::vec3), &lVertex[0], GL_STATIC_DRAW);
+	if (complementaryEnabled == true)
+		glBufferData(GL_ARRAY_BUFFER, cVertex.size() * sizeof(glm::vec3), &cVertex[0], GL_STATIC_DRAW);
+	else
+		glBufferData(GL_ARRAY_BUFFER, lVertex.size() * sizeof(glm::vec3), &lVertex[0], GL_STATIC_DRAW);
 
 	//count the attributes
 	int attributeCount = 2;
@@ -115,6 +130,16 @@ void AppClass::ProcessKeyboard(sf::Event a_event)
 		m_v3Color = glm::vec3(0.0f, 0.0f, 1.0f);
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0))
 		m_v3Color = glm::vec3(-1.0f, -1.0f, -1.0f);
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num9)) // key to enable or disable complementary colors
+	{
+		m_v3Color = glm::vec3(-1.0f, -1.0f, -1.0f);
+		if (complementaryEnabled == true)
+			complementaryEnabled = false;
+		else
+			complementaryEnabled = true;
+
+		InitVariables();
+	}
 }
 void AppClass::Display(void)
 {

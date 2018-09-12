@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{E60B5B2D-19E8-4FD3-BFF7-CB908C5A651A}</ProjectGuid>
+    <ProjectGuid>{D3A8CD7A-B86C-41F2-BEAB-2B110E3C2818}</ProjectGuid>
     <RootNamespace>C05_Shaders</RootNamespace>
-    <ProjectName>C05_Shaders</ProjectName>
+    <ProjectName>E03 - OpenGLShaders</ProjectName>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
