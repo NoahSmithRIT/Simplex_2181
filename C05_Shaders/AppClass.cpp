@@ -115,6 +115,11 @@ void AppClass::ProcessKeyboard(sf::Event a_event)
 		m_v3Color = glm::vec3(0.0f, 0.0f, 1.0f);
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0))
 		m_v3Color = glm::vec3(-1.0f, -1.0f, -1.0f);
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+	{
+		//m_v3Position.x += 0.01f;
+		m_m4ToWorld = glm::translate(vector3(0.5f, 0.0f, 0.0f));
+	}
 }
 void AppClass::Display(void)
 {
@@ -124,6 +129,13 @@ void AppClass::Display(void)
 	//read uniforms and send values
 	GLuint SolidColor = glGetUniformLocation(m_uShaderProgramID, "SolidColor");
 	glUniform3f(SolidColor, m_v3Color.r, m_v3Color.g, m_v3Color.b);
+
+	GLuint M4ToWorld = glGetUniformLocation(m_uShaderProgramID, "M4ToWorld");
+	//const float matrix[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, m_v3Position.x, m_v3Position.y, 0, 1 };
+	glUniformMatrix4fv(M4ToWorld, 1, GL_FALSE, glm::value_ptr(m_m4ToWorld));
+	//glUniformMatrix4fv(M4ToWorld, 1, GL_FALSE, matrix);
+
+	printf("%f, %f, %f\n", m_v3Position.x, m_v3Position.y, m_v3Position.z);
 
 	//draw content
 	glDrawArrays(GL_TRIANGLES, 0, 3);

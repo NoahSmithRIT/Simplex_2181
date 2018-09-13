@@ -28,6 +28,12 @@ class AppClass
 	GLuint m_uShaderProgramID = 0; //Shader program
 	GLuint m_uVAO = 0; //Vertex Array Object
 	GLuint m_uVBO = 0; //Vertex Buffer Object
+
+	typedef glm::vec3 vector3;
+	typedef glm::mat4x4 matrix4;
+
+	glm::mat4x4 m_m4ToWorld;
+	glm::vec3 m_v3Position;
 	
 	glm::vec3 m_v3Color = glm::vec3(-1.0f); //Color of shape
 
