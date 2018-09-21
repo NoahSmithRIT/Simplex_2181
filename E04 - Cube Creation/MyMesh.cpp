@@ -25,7 +25,7 @@ void MyMesh::GenerateCircle(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
 		// find theta
-		float theta = (PI / 180)*((360 / a_nSubdivisions)*i);
+		float theta = (PI / 180)*((360.0f / a_nSubdivisions)*i);
 
 		// calculate point
 		float x = a_fRadius * cos(theta);
@@ -40,6 +40,9 @@ void MyMesh::GenerateCircle(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	{
 		AddTri(pointList[0], pointList[i], pointList[i + 1]);
 	}
+
+	int size = pointList.size();
+	AddTri(pointList[0], pointList[size - 1], pointList[1]);
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
