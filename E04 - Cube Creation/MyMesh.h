@@ -7,6 +7,8 @@ Date: 2017/05
 
 #include "Definitions.h"
 
+#include <vector>
+
 class MyMesh
 {
 	bool m_bBinded = false;		//Binded flag

@@ -17,6 +17,30 @@ void MyMesh::GenerateCircle(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 		then call the AddTri function to generate a_nSubdivision number of faces
 	*/
 
+	vector3 p0 (0, 0, 0); // center
+
+	std::vector<vector3> pointList;
+	pointList.push_back(p0);
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		// find theta
+		float theta = (PI / 180)*((360 / a_nSubdivisions)*i);
+
+		// calculate point
+		float x = a_fRadius * cos(theta);
+		float y = a_fRadius * sin(theta);
+
+		vector3 newPoint(x, y, 0);
+
+		pointList.push_back(newPoint);
+	}
+	
+	for (int i = 1; i < a_nSubdivisions; i++)
+	{
+		AddTri(pointList[0], pointList[i], pointList[i + 1]);
+	}
+
 	// Adding information about color
 	CompleteMesh(a_v3Color);
 	CompileOpenGL3X();
