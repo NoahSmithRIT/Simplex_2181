@@ -280,8 +280,36 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	// Circle
 	vector3 p0(0, 0, 0); // center
 
+	std::vector<vector3> circleList;
+	circleList.push_back(p0);
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		// find theta
+		float theta = (PI / 180)*((360.0f / a_nSubdivisions)*i);
+
+		// calculate point
+		float x = a_fRadius * cos(theta);
+		float y = a_fRadius * sin(theta);
+
+		vector3 newPoint(x, y, 0);
+
+		circleList.push_back(newPoint);
+	}
+
+	for (int i = 1; i < a_nSubdivisions; i++)
+	{
+		AddTri(circleList[0], circleList[i], circleList[i + 1]);
+	}
+
+	int sizeCircle = circleList.size();
+	AddTri(circleList[0], circleList[sizeCircle - 1], circleList[1]);
+
+	// Cone
+	vector3 top(0, 0, -a_fHeight); // top point
+
 	std::vector<vector3> pointList;
-	pointList.push_back(p0);
+	pointList.push_back(top);
 
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
@@ -302,8 +330,8 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 		AddTri(pointList[0], pointList[i], pointList[i + 1]);
 	}
 
-	int size = pointList.size();
-	AddTri(pointList[0], pointList[size - 1], pointList[1]);
+	int sizePoint = pointList.size();
+	AddTri(pointList[0], pointList[sizePoint - 1], pointList[1]);
 
 	// -------------------------------
 
@@ -328,7 +356,64 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	
+	// Bottom Circle
+	vector3 bottomCenter(0, 0, 0); // center
+
+	std::vector<vector3> bottomCircleList;
+	bottomCircleList.push_back(bottomCenter);
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		// find theta
+		float theta = (PI / 180)*((360.0f / a_nSubdivisions)*i);
+
+		// calculate point
+		float x = a_fRadius * cos(theta);
+		float y = a_fRadius * sin(theta);
+
+		vector3 newPoint(x, y, 0);
+
+		bottomCircleList.push_back(newPoint);
+	}
+
+	for (int i = 1; i < a_nSubdivisions; i++)
+	{
+		AddTri(bottomCircleList[0], bottomCircleList[i], bottomCircleList[i + 1]);
+	}
+
+	int sizeBottomCircle = bottomCircleList.size();
+	AddTri(bottomCircleList[0], bottomCircleList[sizeBottomCircle - 1], bottomCircleList[1]);
+	/*
+	// Top Circle
+	vector3 topCenter(0, 0, a_fHeight); // center
+
+	std::vector<vector3> topCircleList;
+	topCircleList.push_back(topCenter);
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		// find theta
+		float theta = (PI / 180)*((360.0f / a_nSubdivisions)*i);
+
+		// calculate point
+		float x = a_fRadius * cos(theta);
+		float y = a_fRadius * sin(theta);
+
+		vector3 newPoint(x, y, 0);
+
+		topCircleList.push_back(newPoint);
+	}
+
+	for (int i = 1; i < a_nSubdivisions; i++)
+	{
+		AddTri(topCircleList[0], topCircleList[i], -topCircleList[i + 1]);
+	}
+
+	int sizeTopCircle = topCircleList.size();
+	AddTri(topCircleList[0], topCircleList[sizeTopCircle - 1], -topCircleList[1]);
+	*/
+
 	// -------------------------------
 
 	// Adding information about color
