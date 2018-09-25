@@ -47,7 +47,7 @@ void Application::Display(void)
 	static float fDisp = 0.0f;
 	fDisp += 0.005f;
 
-	matrix4 m4Space = glm::translate(vector3(fDisp, 0.0f, 0.0f));
+	matrix4 m4Space = glm::translate(vector3(fDisp, 0.0f, 0.0f)); // use to move the whole thing
 
 	//m4Translation[3] = vector4(3.0f, 3.0f, 0.0f, 1.0f);
 	matrix4 m4Translation = m4Space * glm::translate(vector3(0.0f, 0.0f, 0.0f)); // same as above
