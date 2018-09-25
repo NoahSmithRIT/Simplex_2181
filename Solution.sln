@@ -117,6 +117,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A06 - Octree", "A06 - Octre
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "E03 - OpenGLShaders", "E03 - OpenGLShaders\E03_OpenGLShaders.vcxproj", "{D3A8CD7A-B86C-41F2-BEAB-2B110E3C2818}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "E05_Transformations", "E05 - Transformations\E05 - Transformations.vcxproj", "{3266CF9D-D46F-4750-9EF7-98C56F7859C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -313,6 +315,10 @@ Global
 		{D3A8CD7A-B86C-41F2-BEAB-2B110E3C2818}.Debug|x86.Build.0 = Debug|Win32
 		{D3A8CD7A-B86C-41F2-BEAB-2B110E3C2818}.Release|x86.ActiveCfg = Release|Win32
 		{D3A8CD7A-B86C-41F2-BEAB-2B110E3C2818}.Release|x86.Build.0 = Release|Win32
+		{3266CF9D-D46F-4750-9EF7-98C56F7859C6}.Debug|x86.ActiveCfg = Debug|Win32
+		{3266CF9D-D46F-4750-9EF7-98C56F7859C6}.Debug|x86.Build.0 = Debug|Win32
+		{3266CF9D-D46F-4750-9EF7-98C56F7859C6}.Release|x86.ActiveCfg = Release|Win32
+		{3266CF9D-D46F-4750-9EF7-98C56F7859C6}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -365,6 +371,7 @@ Global
 		{413BF597-600A-43A8-8A82-CB60E2DCDD95} = {EE0E027C-366F-4685-94D5-0EA5F6870B1B}
 		{44D2C07B-798D-461B-9019-DFB240593888} = {EE0E027C-366F-4685-94D5-0EA5F6870B1B}
 		{D3A8CD7A-B86C-41F2-BEAB-2B110E3C2818} = {78C06654-E155-40A8-97F7-7BA1E50977C5}
+		{3266CF9D-D46F-4750-9EF7-98C56F7859C6} = {78C06654-E155-40A8-97F7-7BA1E50977C5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A36545A6-DAAA-4856-BDB7-57C29F88BC6B}
