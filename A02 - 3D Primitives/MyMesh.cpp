@@ -384,7 +384,7 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 
 	int sizeBottomCircle = bottomCircleList.size();
 	AddTri(bottomCircleList[0], bottomCircleList[sizeBottomCircle - 1], bottomCircleList[1]);
-	/*
+	
 	// Top Circle
 	vector3 topCenter(0, 0, a_fHeight); // center
 
@@ -400,19 +400,19 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 		float x = a_fRadius * cos(theta);
 		float y = a_fRadius * sin(theta);
 
-		vector3 newPoint(x, y, 0);
+		vector3 newPoint(x, y, a_fHeight);
 
 		topCircleList.push_back(newPoint);
 	}
 
 	for (int i = 1; i < a_nSubdivisions; i++)
 	{
-		AddTri(topCircleList[0], topCircleList[i], -topCircleList[i + 1]);
+		AddTri(topCircleList[i + 1], topCircleList[i], -topCircleList[0]);
 	}
 
 	int sizeTopCircle = topCircleList.size();
-	AddTri(topCircleList[0], topCircleList[sizeTopCircle - 1], -topCircleList[1]);
-	*/
+	AddTri(topCircleList[1], topCircleList[sizeTopCircle - 1], -topCircleList[0]);
+	
 
 	// -------------------------------
 
