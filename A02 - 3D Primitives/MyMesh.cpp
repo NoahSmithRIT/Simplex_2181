@@ -327,11 +327,11 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 
 	for (int i = 1; i < a_nSubdivisions; i++)
 	{
-		AddTri(pointList[0], pointList[i], pointList[i + 1]);
+		AddTri(pointList[i], pointList[0], pointList[i + 1]);
 	}
 
 	int sizePoint = pointList.size();
-	AddTri(pointList[0], pointList[sizePoint - 1], pointList[1]);
+	AddTri(pointList[sizePoint - 1], pointList[0], pointList[1]);
 
 	// -------------------------------
 
