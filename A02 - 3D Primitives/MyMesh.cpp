@@ -412,6 +412,15 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 
 	int sizeTopCircle = topCircleList.size();
 	AddTri(topCircleList[0], topCircleList[sizeTopCircle - 1], topCircleList[1]);
+
+	// Sides
+
+	for (int i = 1; i < a_nSubdivisions; i++)
+	{
+		AddQuad(bottomCircleList[i], bottomCircleList[i + 1], topCircleList[i], topCircleList[i + 1]);
+	}
+
+	AddQuad(bottomCircleList[0], bottomCircleList[sizeBottomCircle - 1], topCircleList[0], topCircleList[sizeTopCircle - 1]);
 	
 
 	// -------------------------------
