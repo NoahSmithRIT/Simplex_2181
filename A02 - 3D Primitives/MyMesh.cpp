@@ -420,7 +420,7 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 		AddQuad(bottomCircleList[i], bottomCircleList[i + 1], topCircleList[i], topCircleList[i + 1]);
 	}
 
-	AddQuad(bottomCircleList[0], bottomCircleList[sizeBottomCircle - 1], topCircleList[0], topCircleList[sizeTopCircle - 1]);
+	AddQuad(bottomCircleList[sizeTopCircle - 1], bottomCircleList[1], topCircleList[sizeTopCircle - 1], topCircleList[1]);
 	
 
 	// -------------------------------
@@ -452,7 +452,121 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
+	
+	// Bottom Outer Circle
+
+	std::vector<vector3> bottomOuterCircleList;
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		// find theta
+		float theta = (PI / 180)*((360.0f / a_nSubdivisions)*i);
+
+		// calculate point
+		float x = a_fOuterRadius * cos(theta);
+		float y = a_fOuterRadius * sin(theta);
+
+		vector3 newPoint(x, y, 0);
+
+		bottomOuterCircleList.push_back(newPoint);
+	}
+
+	// Bottom Inner Circle
+
+	std::vector<vector3> bottomInnerCircleList;
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		// find theta
+		float theta = (PI / 180)*((360.0f / a_nSubdivisions)*i);
+
+		// calculate point
+		float x = a_fInnerRadius * cos(theta);
+		float y = a_fInnerRadius * sin(theta);
+
+		vector3 newPoint(x, y, 0);
+
+		bottomInnerCircleList.push_back(newPoint);
+	}
+
+	// Bottom Circle Mesh
+
+	int sizeBottomOuter = bottomOuterCircleList.size();
+	int sizeBottomInner = bottomInnerCircleList.size();
+
+	for (int i = 0; i < a_nSubdivisions - 1; i++)
+	{
+		AddQuad(bottomOuterCircleList[i + 1], bottomOuterCircleList[i], bottomInnerCircleList[i + 1], bottomInnerCircleList[i]);
+	}
+
+	AddQuad(bottomOuterCircleList[0], bottomOuterCircleList[sizeBottomOuter - 1], bottomInnerCircleList[0], bottomInnerCircleList[sizeBottomInner - 1]);
+
+	// Top Outer Circle
+
+	std::vector<vector3> topOuterCircleList;
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		// find theta
+		float theta = (PI / 180)*((360.0f / a_nSubdivisions)*i);
+
+		// calculate point
+		float x = a_fOuterRadius * cos(theta);
+		float y = a_fOuterRadius * sin(theta);
+
+		vector3 newPoint(x, y, a_fHeight);
+
+		topOuterCircleList.push_back(newPoint);
+	}
+
+	// Top Inner Circle
+
+	std::vector<vector3> topInnerCircleList;
+
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		// find theta
+		float theta = (PI / 180)*((360.0f / a_nSubdivisions)*i);
+
+		// calculate point
+		float x = a_fInnerRadius * cos(theta);
+		float y = a_fInnerRadius * sin(theta);
+
+		vector3 newPoint(x, y, a_fHeight);
+
+		topInnerCircleList.push_back(newPoint);
+	}
+
+	// Top Circle Mesh
+
+	int sizeTopOuter = topOuterCircleList.size();
+	int sizeTopInner = topInnerCircleList.size();
+
+	for (int i = 0; i < a_nSubdivisions - 1; i++)
+	{
+		AddQuad(topOuterCircleList[i], topOuterCircleList[i + 1], topInnerCircleList[i], topInnerCircleList[i + 1]);
+	}
+
+	AddQuad(topOuterCircleList[sizeTopOuter - 1], topOuterCircleList[0], topInnerCircleList[sizeTopInner - 1], topInnerCircleList[0]);
+
+	// Sides Outer
+
+	for (int i = 0; i < a_nSubdivisions - 1; i++)
+	{
+		AddQuad(bottomOuterCircleList[i], bottomOuterCircleList[i + 1], topOuterCircleList[i], topOuterCircleList[i + 1]);
+	}
+
+	AddQuad(bottomOuterCircleList[sizeBottomOuter - 1], bottomOuterCircleList[0], topOuterCircleList[sizeTopOuter - 1], topOuterCircleList[0]);
+
+	// Sides Inner
+
+	for (int i = 0; i < a_nSubdivisions - 1; i++)
+	{
+		AddQuad(bottomOuterCircleList[i + 1], bottomOuterCircleList[i], topOuterCircleList[i + 1], topOuterCircleList[i]);
+	}
+
+	AddQuad(bottomOuterCircleList[0], bottomOuterCircleList[sizeBottomOuter - 1], topOuterCircleList[0], topOuterCircleList[sizeTopOuter - 1]);
+
 	// -------------------------------
 
 	// Adding information about color
@@ -509,7 +623,19 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
+
+	// This code does not crash, but draws nothing and I am not entirely sure why
+	// I also looked into using octahedrons, dodecahedrons, and icosahedrons but I could not wrap my head around how they worked
+	
+	GLUquadricObj *quadric = NULL;
+	quadric = gluNewQuadric();
+
+	gluQuadricNormals(quadric, GLU_SMOOTH); // smooth normal blending (Gouraud style)
+
+	gluSphere(quadric, a_fRadius, a_nSubdivisions, a_nSubdivisions);
+
+	gluDeleteQuadric(quadric);
+	
 	// -------------------------------
 
 	// Adding information about color
