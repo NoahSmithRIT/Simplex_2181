@@ -1,32 +1,14 @@
 #include "AppClass.h"
 void Application::InitVariables(void)
 {
+	m_pCameraMngr->SetPositionTargetAndUpward(AXIS_Z * 5, ZERO_V3, AXIS_Y);
 	//Make MyMesh object
 	m_pMesh = new MyMesh();
-	/*
-	m_pMesh->AddVertexPosition(vector3(-1, -1, 0));
-	m_pMesh->AddVertexColor(vector3(1, 0, 0));
-
-	m_pMesh->AddVertexPosition(vector3(1, -1, 0));
-	m_pMesh->AddVertexColor(vector3(0, 1, 0));
-
-	m_pMesh->AddVertexPosition(vector3(-1, 1, 0));
-	m_pMesh->AddVertexColor(vector3(0, 0, 1));
-
-	m_pMesh->AddVertexPosition(vector3(-1, 1, 0));
-	m_pMesh->AddVertexPosition(vector3(1, -1, 0));
-	m_pMesh->AddVertexPosition(vector3(1, 1, 0));
-
-	m_pMesh->CompileOpenGL3X();
-	*/
-	
-	m_pMesh->GenerateCube(1.0f, C_BROWN);
+	m_pMesh->GenerateCone(1.0f, 2.0f, 3, C_WHITE);
 
 	//Make MyMesh object
 	m_pMesh1 = new MyMesh();
 	m_pMesh1->GenerateCube(1.0f, C_WHITE);
-
-	m_pCameraMngr->SetPositionTargetAndUpward(vector3(0.0f, 0.0f, 10.0f), vector3(0.0f), AXIS_Y);
 }
 void Application::Update(void)
 {
@@ -43,24 +25,53 @@ void Application::Display(void)
 {
 	// Clear the screen
 	ClearScreen();
+	static DWORD DStartingTime = GetTickCount();
+	DWORD DCurrentTime = GetTickCount();
+	DWORD DDelta = DCurrentTime - DStartingTime;
+	float fTimer = static_cast<float>(DDelta / 1000.0f);
+	std::cout << fTimer <<std::endl;
 
-	static float fDisp = 0.0f;
-	fDisp += 0.005f;
+	float fTotalTime = 5.5f;
 
-	matrix4 m4Space = glm::translate(vector3(fDisp, 0.0f, 0.0f));
+	float fPercent = MapValue(fTimer, 0.0f, fTotalTime, 0.0f, 1.0f);
 
-	//m4Translation[3] = vector4(3.0f, 3.0f, 0.0f, 1.0f);
-	matrix4 m4Translation = m4Space * glm::translate(vector3(0.0f, 0.0f, 0.0f)); // same as above
-	//matrix4 m4Scale = glm::scale(vector3(2.0f, 2.0f, 2.0f));
-	//matrix4 m4Comp = m4Scale * m4Translation;
-	//matrix4 m4Comp = m4Translation * m4Scale;
+	static vector3 v3InitialPoint(0.0f, 0.0f, 0.0f);
+	static vector3 v3EndPoint(5.0f, 0.0f, 0.0f);
 
-	matrix4 m4Translation2;
-	m4Translation2 = glm::translate(m4Space, vector3(1.0f, 0.0f, 0.0f));
+	static float fStart = 0.0f;
+	static float fEnd = 180.0f;
 
+	float fCurrent = glm::lerp(fStart, fEnd, fPercent);
+	vector3 v3Position = glm::lerp(v3InitialPoint, v3EndPoint, fPercent);
 
-	m_pMesh->Render(m_pCameraMngr->GetProjectionMatrix(), m_pCameraMngr->GetViewMatrix(), m4Translation);
-	m_pMesh1->Render(m_pCameraMngr->GetProjectionMatrix(), m_pCameraMngr->GetViewMatrix(), m4Translation2);
+	matrix4 m4Rotation = glm::rotate(IDENTITY_M4, glm::radians(fCurrent), AXIS_Z);
+	matrix4 m4Position = glm::translate(m4Rotation, v3EndPoint);
+	
+	m4Position = glm::translate(vector3(0.0f)); // Ignoring anything that happened before
+
+	// new matrix transformation
+	matrix4 m4RotX = glm::rotate(IDENTITY_M4, glm::radians(m_v3Angles.x), AXIS_X);
+	matrix4 m4RotY = glm::rotate(IDENTITY_M4, glm::radians(m_v3Angles.y), AXIS_Y);
+	matrix4 m4RotZ = glm::rotate(IDENTITY_M4, glm::radians(m_v3Angles.z), AXIS_Z);
+
+	matrix4 m4Transform = m4RotX * m4RotY * m4RotZ;
+
+	// render in the new position
+	m_pMesh->Render(m_pCameraMngr->GetProjectionMatrix(), m_pCameraMngr->GetViewMatrix(), m4Transform);
+
+	// change the axis
+	//m_v3Angles = vector3(fTimer * 45.0f);
+	/*
+	if (fPercent >= 1.0f)
+	{
+		DStartingTime = GetTickCount();
+		//std::swap(v3InitialPoint, v3EndPoint);
+		std::swap(fStart, fEnd);
+		//fPercent = 0.00f;
+	}
+	fPercent += 0.01f;
+	*/
+	//m_pMesh1->Render(m_pCameraMngr->GetProjectionMatrix(), m_pCameraMngr->GetViewMatrix(), glm::translate(vector3( 3.0f, 0.0f, 0.0f)));
 		
 	// draw a skybox
 	m_pMeshMngr->AddSkyboxToRenderList();
