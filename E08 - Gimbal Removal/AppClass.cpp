@@ -25,11 +25,27 @@ void Application::Display(void)
 	matrix4 m4View = m_pCameraMngr->GetViewMatrix();
 	matrix4 m4Projection = m_pCameraMngr->GetProjectionMatrix();
 
-	m_m4Model = glm::rotate(IDENTITY_M4, glm::radians(m_v3Rotation.x), vector3(1.0f, 0.0f, 0.0f));
-	m_m4Model = glm::rotate(m_m4Model, glm::radians(m_v3Rotation.y), vector3(0.0f, 1.0f, 0.0f));
-	m_m4Model = glm::rotate(m_m4Model, glm::radians(m_v3Rotation.z), vector3(0.0f, 0.0f, 1.0f));
-	m_pMesh->Render(m4Projection, m4View, ToMatrix4(m_m4Model));
+	// E08
+	static uint uClock = m_pSystem->GenClock();
+	float fTimer = m_pSystem->GetTimeSinceStart(uClock);
+	float fDeltaTime = m_pSystem->GetDeltaTime(uClock);
 
+	quaternion q1;
+	quaternion q2 = glm::angleAxis(glm::radians(0.1f), vector3(0.0f, 0.0f, 1.0f));
+	static quaternion q3;
+	float fPercentage = MapValue(fTimer, 0.0f, 5.0f, 0.0f, 1.0f);
+	q3 = glm::mix(q1, q2, fPercentage);
+	m_m4Model = glm::toMat4(q3);
+	
+	matrix4 x = glm::rotate(IDENTITY_M4, glm::radians(m_v3Rotation.x), vector3(1.0f, 0.0f, 0.0f));
+	matrix4 y = glm::rotate(IDENTITY_M4, glm::radians(m_v3Rotation.y), vector3(0.0f, 1.0f, 0.0f));
+	matrix4 z = glm::rotate(IDENTITY_M4, glm::radians(m_v3Rotation.z), vector3(0.0f, 0.0f, 1.0f));
+
+	matrix4 orientation = x * y * z;
+	m_m4Model = glm::toMat4(m_qOrientation);
+	
+	m_pMesh->Render(m4Projection, m4View, ToMatrix4(m_m4Model));
+	
 	//m_qOrientation = m_qOrientation * glm::angleAxis(glm::radians(1.0f), vector3(1.0f));
 	//m_pMesh->Render(m4Projection, m4View, ToMatrix4(m_qOrientation));
 	
