@@ -56,8 +56,15 @@ void Application::Display(void)
 
 	matrix4 m4Transform = m4RotX * m4RotY * m4RotZ;
 
+	glm::quat q1;
+	quaternion q2 = glm::angleAxis(glm::radians(45.0f), AXIS_Z);
+	static quaternion q3;
+	q3 = q1 * q2;
+
 	// render in the new position
-	m_pMesh->Render(m_pCameraMngr->GetProjectionMatrix(), m_pCameraMngr->GetViewMatrix(), m4Transform);
+	//m_pMesh->Render(m_pCameraMngr->GetProjectionMatrix(), m_pCameraMngr->GetViewMatrix(), m4Transform);
+	m_pMesh->Render(m_pCameraMngr->GetProjectionMatrix(), m_pCameraMngr->GetViewMatrix(), ToMatrix4(q3));
+
 
 	// change the axis
 	//m_v3Angles = vector3(fTimer * 45.0f);
