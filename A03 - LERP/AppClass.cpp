@@ -2,7 +2,7 @@
 void Application::InitVariables(void)
 {
 	//Change this to your name and email
-	m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
+	m_sProgrammer = "Noah Smith - nes9968@rit.edu";
 	
 	//Set the position and target of the camera
 	//(I'm at [0,0,10], looking at [0,0,0] and up is the positive Y axis)
@@ -75,7 +75,34 @@ void Application::Display(void)
 
 		//draw spheres
 		m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.1)), C_WHITE);
+
+		// A03
+
+		static int numberOfPoints = 3; // starts with 3 for triangle
+		std::vector<vector3> stopList; // list containing stops for one shape, resets (non static)
+		static std::vector<std::vector<vector3>> totalList; // list of lists
+		static float radius = 0.5f; // starting radius of circle, increases by 0.5 for every new shape
+		float x;
+		float y;
+		int pointNumber = 1; // counting variable for what point is being calculated, resets
+
+		for (int i = 0; i <= numberOfPoints; ++i)
+		{
+			x = radius * cos(pointNumber * ((2 * PI) / numberOfPoints));
+			y = radius * sin(pointNumber * ((2 * PI) / numberOfPoints));
+			stopList.push_back(vector3(x, y, 0.0f));
+			pointNumber++;
+		}
+
+		// add list of stops to list
+		totalList.push_back(stopList);
+
+		// increment
+		numberOfPoints++;
+		radius += 0.5f;
 	}
+
+	// lerp
 
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();
