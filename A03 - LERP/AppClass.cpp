@@ -64,24 +64,18 @@ void Application::Display(void)
 	*/
 	//m4Offset = glm::rotate(IDENTITY_M4, 1.5708f, AXIS_Z);
 
+	static std::vector<std::vector<vector3>> totalList; // list of lists
+
 	// draw a shapes
 	for (uint i = 0; i < m_uOrbits; ++i)
 	{
 		m_pMeshMngr->AddMeshToRenderList(m_shapeList[i], glm::rotate(m4Offset, 1.5708f, AXIS_X));
 
-		//calculate the current position
-		vector3 v3CurrentPos = ZERO_V3;
-		matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
-
-		//draw spheres
-		m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.1)), C_WHITE);
-
 		// A03
 
 		static int numberOfPoints = 3; // starts with 3 for triangle
 		std::vector<vector3> stopList; // list containing stops for one shape, resets (non static)
-		static std::vector<std::vector<vector3>> totalList; // list of lists
-		static float radius = 0.5f; // starting radius of circle, increases by 0.5 for every new shape
+		static float radius = 0.95f; // starting radius of circle, increases by 0.5 for every new shape
 		float x;
 		float y;
 		int pointNumber = 1; // counting variable for what point is being calculated, resets
@@ -100,10 +94,54 @@ void Application::Display(void)
 		// increment
 		numberOfPoints++;
 		radius += 0.5f;
+
+		// lerp
+
+	//Get a timer
+		static float fTimer = 0;	//store the new timer
+		static uint uClock = m_pSystem->GenClock(); //generate a new clock for that timer
+		fTimer += m_pSystem->GetDeltaTime(uClock); //get the delta time for that timer
+
+		vector3 v3CurrentPos = vector3(0.0f, 0.0f, 0.0f);
+
+		vector3 v3Start; //start point
+		vector3 v3End; // end point
+		static uint route = 0; //current route
+
+		for (int i = 0; i < totalList.size(); i++)
+		{
+			v3Start = totalList[i][route % (i + 3)];
+			v3End = totalList[i][(route + 1) % (i + 3)];
+
+			//get the percentace
+			float fTimeBetweenStops = 2.0;//in seconds
+			//map the value to be between 0.0 and 1.0
+			float fPercentage = MapValue(fTimer, 0.0f, fTimeBetweenStops, 0.0f, 1.0f);
+
+			//calculate the current position
+			v3CurrentPos = glm::lerp(v3Start, v3End, fPercentage);
+			matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
+
+			//draw spheres
+			m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.1)), C_WHITE);
+
+			//if we are done with this route
+			if (fPercentage >= 1.0f)
+			{
+				route++; //go to the next route
+				fTimer = m_pSystem->GetDeltaTime(uClock);//restart the clock
+				route %= totalList.size();
+			}
+		}
+
+		//calculate the current position
+		//v3CurrentPos = ZERO_V3;
+		//matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
+
+		//draw spheres
+		//m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.1)), C_WHITE);
 	}
-
-	// lerp
-
+	
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();
 
