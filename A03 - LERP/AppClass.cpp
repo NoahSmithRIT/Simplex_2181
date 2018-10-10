@@ -62,7 +62,7 @@ void Application::Display(void)
 	/*
 		The following offset will orient the orbits as in the demo, start without it to make your life easier.
 	*/
-	//m4Offset = glm::rotate(IDENTITY_M4, 1.5708f, AXIS_Z);
+	m4Offset = glm::rotate(IDENTITY_M4, 1.5708f, AXIS_Z);
 
 	static std::vector<std::vector<vector3>> totalList; // list of lists
 
@@ -72,7 +72,6 @@ void Application::Display(void)
 		m_pMeshMngr->AddMeshToRenderList(m_shapeList[i], glm::rotate(m4Offset, 1.5708f, AXIS_X));
 
 		// A03
-
 		static int numberOfPoints = 3; // starts with 3 for triangle
 		std::vector<vector3> stopList; // list containing stops for one shape, resets (non static)
 		static float radius = 0.95f; // starting radius of circle, increases by 0.5 for every new shape
@@ -96,8 +95,7 @@ void Application::Display(void)
 		radius += 0.5f;
 
 		// lerp
-
-	//Get a timer
+		//Get a timer
 		static float fTimer = 0;	//store the new timer
 		static uint uClock = m_pSystem->GenClock(); //generate a new clock for that timer
 		fTimer += m_pSystem->GetDeltaTime(uClock); //get the delta time for that timer
@@ -108,38 +106,28 @@ void Application::Display(void)
 		vector3 v3End; // end point
 		static uint route = 0; //current route
 
-		for (int i = 0; i < totalList.size(); i++)
-		{
-			v3Start = totalList[i][route % (i + 3)];
-			v3End = totalList[i][(route + 1) % (i + 3)];
+		v3Start = totalList[i][route % (i + 3)];
+		v3End = totalList[i][(route + 1) % (i + 3)];
 
-			//get the percentace
-			float fTimeBetweenStops = 2.0;//in seconds
-			//map the value to be between 0.0 and 1.0
-			float fPercentage = MapValue(fTimer, 0.0f, fTimeBetweenStops, 0.0f, 1.0f);
-
-			//calculate the current position
-			v3CurrentPos = glm::lerp(v3Start, v3End, fPercentage);
-			matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
-
-			//draw spheres
-			m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.1)), C_WHITE);
-
-			//if we are done with this route
-			if (fPercentage >= 1.0f)
-			{
-				route++; //go to the next route
-				fTimer = m_pSystem->GetDeltaTime(uClock);//restart the clock
-				route %= totalList.size();
-			}
-		}
+		//get the percentace
+		float fTimeBetweenStops = 1.0;//in seconds
+		//map the value to be between 0.0 and 1.0
+		float fPercentage = MapValue(fTimer, 0.0f, fTimeBetweenStops, 0.0f, 1.0f);
 
 		//calculate the current position
-		//v3CurrentPos = ZERO_V3;
-		//matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
+		v3CurrentPos = glm::lerp(v3Start, v3End, fPercentage);
+		matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
 
 		//draw spheres
-		//m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.1)), C_WHITE);
+		m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.1)), C_WHITE);
+
+		//if we are done with this route
+		if (fPercentage >= 1.0f)
+		{
+			route++; //go to the next route
+			fTimer = m_pSystem->GetDeltaTime(uClock);//restart the clock
+			route %= totalList.size();
+		}
 	}
 	
 	//render list call
