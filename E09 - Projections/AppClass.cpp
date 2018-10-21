@@ -54,21 +54,40 @@ void Application::Display(void)
 		break;
 	case 2:
 		m_pCamera->ResetCamera();
+		m_pCamera->SetPerspective(false);
+		m_pCamera->SetFOV(5.0f); // legitimately a first guess w/o knowing the default FOV and was right
 		break;
 	case 3:
 		m_pCamera->ResetCamera();
+		m_pCamera->SetPerspective(false);
+		m_pCamera->SetPositionTargetAndUpward(vector3(10.0f, 0.0f, 0.0f), vector3(0.0f, 0.0f, 0.0f), vector3(0.0f, 0.0f, -1.0f));
+		m_pCamera->SetHorizontalPlanes(vector2(-15.0f, 15.0f));
+		m_pCamera->SetVerticalPlanes(vector2(-15.0f, 15.0f));
 		break;
 	case 4:
 		m_pCamera->ResetCamera();
+		m_pCamera->SetPerspective(true);
+		m_pCamera->SetPositionTargetAndUpward(vector3(0.0f, 0.0f, -14.0f), vector3(0.0f, 0.0f, 0.0f), vector3(0.0f, -1.0f, 0.0f));
+		m_pCamera->SetFOV(5.0f);
 		break;
 	case 5:
 		m_pCamera->ResetCamera();
+		m_pCamera->SetPerspective(true);
+		m_pCamera->SetPositionTargetAndUpward(vector3(0.0f, 0.0f, -14.0f), vector3(0.0f, 0.0f, 0.0f), vector3(0.0f, -1.0f, 0.0f));
+		m_pCamera->SetFOV(5.0f);
+		m_pCamera->SetNearFar(vector2(5.0f, 1000.0f));
 		break;
 	case 6:
 		m_pCamera->ResetCamera();
+		m_pCamera->SetPerspective(true);
+		m_pCamera->SetPositionTargetAndUpward(vector3(0.0f, 0.0f, -14.0f), vector3(0.0f, 0.0f, 0.0f), vector3(0.0f, -1.0f, 0.0f));
+		m_pCamera->SetFOV(5.0f);
+		m_pCamera->SetNearFar(vector2(0.001f, 9.0f));
 		break;
 	case 7:
 		m_pCamera->ResetCamera();
+		m_pCamera->SetPerspective(true);
+		m_pCamera->SetPositionTargetAndUpward(vector3(0.0f, 0.0f, 10.f), vector3(0.0f, 0.0f, 0.0f), vector3(0.0f, -1.0f, 0.0f));
 		break;
 	}
 
