@@ -28,6 +28,10 @@ class MyCamera
 
 	matrix4 m_m4View; //View matrix
 	matrix4 m_m4Projection; //Projection Matrix
+
+	Simplex::SystemSingleton* m_pSystem = nullptr;
+	float yaw;
+	float pitch;
 public:
 	/*
 	USAGE: Constructor
@@ -230,6 +234,20 @@ public:
 	OUTPUT: ---
 	*/
 	void MoveSideways(float a_fDistance = 0.1f);
+
+	void Movement();
+	/*
+	USAGE: Calls movement and rotation functions for A04
+	ARGUMENTS: ---
+	OUTPUT: ---
+	*/
+
+	void MouseRotation(float speed = 1.0f);
+	/*
+	USAGE: copy of camera rotation method from app class controls
+	ARGUMENTS: speed to rotate camera
+	OUTPUT: ---
+	*/
 };
 
 } //namespace Simplex

@@ -158,5 +158,103 @@ void MyCamera::MoveForward(float a_fDistance)
 	m_v3Above += vector3(0.0f, 0.0f, -a_fDistance);
 }
 
-void MyCamera::MoveVertical(float a_fDistance){}//Needs to be defined
-void MyCamera::MoveSideways(float a_fDistance){}//Needs to be defined
+void MyCamera::MoveVertical(float a_fDistance)//Needs to be defined
+{
+	m_v3Position += vector3(0.0f, -a_fDistance, 0.0f);
+	m_v3Target += vector3(0.0f, -a_fDistance, 0.0f);
+	m_v3Above += vector3(0.0f, -a_fDistance, 0.0f);
+}
+
+void MyCamera::MoveSideways(float a_fDistance)//Needs to be defined
+{
+	//rotate m_v3Target 90 degrees (?)
+	CalculateViewMatrix();
+}
+
+void Simplex::MyCamera::Movement()
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		MoveForward(0.1f);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		MoveForward(-0.1f);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		MoveSideways(-0.1f);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		MoveSideways(0.1f);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+	{
+		MoveVertical(0.1f);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+	{
+		MoveVertical(0.1f);
+	}
+
+	else if (sf::Mouse::Button(sf::Mouse::Right));
+	{
+		MouseRotation(1.0f);
+	}
+}
+
+void Simplex::MyCamera::MouseRotation(float a_fSpeed)
+{
+	UINT	MouseX, MouseY;		// Coordinates for the mouse
+	UINT	CenterX, CenterY;	// Coordinates for the center of the screen.
+
+								//Initialize the position of the pointer to the middle of the screen
+	CenterX = m_pSystem->GetWindowX() + m_pSystem->GetWindowWidth() / 2;
+	CenterY = m_pSystem->GetWindowY() + m_pSystem->GetWindowHeight() / 2;
+
+	//Calculate the position of the mouse and store it
+	POINT pt;
+	GetCursorPos(&pt);
+	MouseX = pt.x;
+	MouseY = pt.y;
+
+	//Calculate the difference in view with the angle
+	float fAngleX = 0.0f;
+	float fAngleY = 0.0f;
+	float fDeltaMouse = 0.0f;
+	if (MouseX < CenterX)
+	{
+		fDeltaMouse = static_cast<float>(CenterX - MouseX);
+		fAngleY += fDeltaMouse * a_fSpeed;
+	}
+	else if (MouseX > CenterX)
+	{
+		fDeltaMouse = static_cast<float>(MouseX - CenterX);
+		fAngleY -= fDeltaMouse * a_fSpeed;
+	}
+
+	if (MouseY < CenterY)
+	{
+		fDeltaMouse = static_cast<float>(CenterY - MouseY);
+		fAngleX -= fDeltaMouse * a_fSpeed;
+	}
+	else if (MouseY > CenterY)
+	{
+		fDeltaMouse = static_cast<float>(MouseY - CenterY);
+		fAngleX += fDeltaMouse * a_fSpeed;
+	}
+	//Change the Yaw and the Pitch of the camera
+	yaw += fAngleX;
+	pitch += fAngleY;
+
+	if (pitch > 89.0f)
+		pitch = 89.0f;
+	if (pitch < -89.0f)
+		pitch = -89.0f;
+
+	// implement pitch and yaw
+	// use pitch and yaw to rotate m_v3Target...somehow
+
+	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
+}
