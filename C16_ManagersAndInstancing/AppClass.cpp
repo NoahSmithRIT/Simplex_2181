@@ -31,6 +31,7 @@ void Application::Update(void)
 	CameraRotation();
 
 	//Add objects to the Manager
+	
 	uint nCount = 0;
 	for (int j = -420; j < 420; j += 2)
 	{
@@ -41,6 +42,7 @@ void Application::Update(void)
 		}
 	}
 	m_pMeshMngr->Print("Objects: " + std::to_string(nCount) + "\n", C_BLUE);
+	
 }
 void Application::Display(void)
 {
