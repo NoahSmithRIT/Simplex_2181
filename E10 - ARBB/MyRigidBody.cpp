@@ -76,6 +76,7 @@ vector3 MyRigidBody::GetMinGlobal(void) { return m_v3MinG; }
 vector3 MyRigidBody::GetMaxGlobal(void) { return m_v3MaxG; }
 vector3 MyRigidBody::GetHalfWidth(void) { return m_v3HalfWidth; }
 matrix4 MyRigidBody::GetModelMatrix(void) { return m_m4ToWorld; }
+
 void MyRigidBody::SetModelMatrix(matrix4 a_m4ModelMatrix)
 {
 	//to save some calculations if the model matrix is the same there is nothing to do here
@@ -85,8 +86,47 @@ void MyRigidBody::SetModelMatrix(matrix4 a_m4ModelMatrix)
 	m_m4ToWorld = a_m4ModelMatrix;
 	
 	//your code goes here---------------------
-	m_v3MinG = m_v3MinL;
-	m_v3MaxG = m_v3MaxL;
+
+	std::vector<vector3> points;
+
+	// find the 8 corner vertices
+	points.push_back(m_v3MinL);
+	points.push_back(vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MinL.z));
+	points.push_back(vector3(m_v3MinL.x, m_v3MaxL.y, m_v3MinL.z));
+	points.push_back(vector3(m_v3MaxL.x, m_v3MaxL.y, m_v3MinL.z));
+	points.push_back(vector3(m_v3MinL.x, m_v3MinL.y, m_v3MaxL.z));
+	points.push_back(vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MaxL.z));
+	points.push_back(vector3(m_v3MinL.x, m_v3MaxL.y, m_v3MaxL.z));
+	points.push_back(m_v3MaxL);
+
+	int size = points.size();
+
+	// put in world space (vector3(matrix4 * vector3(vector,1) Slides are wrong, second vector3 needs to be a vector4
+	for (int i = 0; i < size; ++i)
+	{
+		points[i] = vector3(m_m4ToWorld * vector4(points[i], 1.0f));
+	}
+
+	m_v3MinG = points[0];
+	m_v3MaxG = points[0];
+
+	for (uint i = 1; i < size; i++) // set max and min global values
+	{
+		if (m_v3MinG.x > points[i].x)
+			m_v3MinG.x = points[i].x;
+		else if (m_v3MaxG.x < points[i].x)
+			m_v3MaxG.x = points[i].x;
+
+		if (m_v3MinG.y > points[i].y)
+			m_v3MinG.y = points[i].y;
+		else if (m_v3MaxG.y < points[i].y)
+			m_v3MaxG.y = points[i].y;
+
+		if (m_v3MinG.z > points[i].z)
+			m_v3MinG.z = points[i].z;
+		else if (m_v3MaxG.z < points[i].z)
+			m_v3MaxG.z = points[i].z;
+	}
 	//----------------------------------------
 
 	//we calculate the distance between min and max vectors
