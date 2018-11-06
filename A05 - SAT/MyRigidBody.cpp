@@ -232,6 +232,7 @@ bool MyRigidBody::IsColliding(MyRigidBody* const a_pOther)
 	//if they are colliding check the SAT
 	if (bColliding)
 	{
+		uint results = SAT(a_pOther);
 		if(SAT(a_pOther) != eSATResults::SAT_NONE)
 			bColliding = false;// reset to false
 	}
@@ -291,9 +292,31 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	matrix3 R, AbsR;
 
 	// rotation matrix
+	std::vector<vector3> objectOne;
+	std::vector<vector3> objectTwo;
+
+	// object one
+	vector3 objectOneX = vector3(m_m4ToWorld * vector4(AXIS_X, 0.0f));
+	vector3 objectOneY = vector3(m_m4ToWorld * vector4(AXIS_Y, 0.0f));
+	vector3 objectOneZ = vector3(m_m4ToWorld * vector4(AXIS_Z, 0.0f));
+
+	objectOne.push_back(objectOneX);
+	objectOne.push_back(objectOneY);
+	objectOne.push_back(objectOneZ);
+
+	// object two
+	vector3 objectTwoX = vector3(a_pOther->m_m4ToWorld * vector4(AXIS_X, 0.0f));
+	vector3 objectTwoY = vector3(a_pOther->m_m4ToWorld * vector4(AXIS_Y, 0.0f));
+	vector3 objectTwoZ = vector3(a_pOther->m_m4ToWorld * vector4(AXIS_Z, 0.0f));
+
+	objectTwo.push_back(objectTwoX);
+	objectTwo.push_back(objectTwoY);
+	objectTwo.push_back(objectTwoZ);
+
+
 	for (int i = 0; i < 3; i++)
 		for (int j = 0; j < 3; j++)
-			R[i][j] = glm::dot(m_v3MinL[i], a_pOther->m_v3MinL[j]);
+			R[i][j] = glm::dot(objectOne[i], objectTwo[j]);
 
 	// translation vector
 	vector3 t = a_pOther->m_v3Center - m_v3Center;
@@ -326,21 +349,25 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 			return 1;
 	}
 
+	// Putting in break points shows that each test I'm testing is returning 1 when I that one individually, so SAT should be working
+	// but for some reason collision is showing true from the extents of the sphere collider
+	// instead of like the solution application. Can't figure out why.
+
 	// test axis A0 * B0
 	ra = m_v3HalfWidth[1] * AbsR[2][0] + m_v3HalfWidth[2] * AbsR[1][0];
-	rb = a_pOther->m_v3HalfWidth[0] * AbsR[0][2] + a_pOther->m_v3HalfWidth[2] * AbsR[0][1];
-	if (abs(t[2] * R[1][2] - t[1] * R[2][2]) > ra + rb)
-		return 1;
+	rb = a_pOther->m_v3HalfWidth[1] * AbsR[0][2] + a_pOther->m_v3HalfWidth[2] * AbsR[0][1];
+	if (abs(t[2] * R[1][0] - t[1] * R[2][0]) > ra + rb)
+		return eSATResults::SAT_AXxBX;
 
 	// test axis A0 * B1
 	ra = m_v3HalfWidth[1] * AbsR[2][1] + m_v3HalfWidth[2] * AbsR[1][1];
-	rb = a_pOther->m_v3HalfWidth[1] * AbsR[0][2] + a_pOther->m_v3HalfWidth[2] * AbsR[0][0];
+	rb = a_pOther->m_v3HalfWidth[0] * AbsR[0][2] + a_pOther->m_v3HalfWidth[2] * AbsR[0][0];
 	if (abs(t[2] * R[1][1] - t[1] * R[2][1]) > ra + rb)
 		return 1;
 
 	// test axis A0 * B2
 	ra = m_v3HalfWidth[1] * AbsR[2][2] + m_v3HalfWidth[2] * AbsR[1][2];
-	rb = a_pOther->m_v3HalfWidth[1] * AbsR[0][1] + a_pOther->m_v3HalfWidth[1] * AbsR[0][0];
+	rb = a_pOther->m_v3HalfWidth[0] * AbsR[0][1] + a_pOther->m_v3HalfWidth[1] * AbsR[0][0];
 	if (abs(t[2] * R[1][2] - t[1] * R[2][2]) > ra + rb)
 		return 1;
 

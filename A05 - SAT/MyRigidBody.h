@@ -7,6 +7,8 @@ Date: 2017/06
 
 #include "Simplex\Simplex.h"
 
+#include <vector>
+
 namespace Simplex
 {
 
