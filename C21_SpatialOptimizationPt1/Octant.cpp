@@ -74,6 +74,10 @@ void Simplex::MyOctant::Subdivide(void)
 		m_pChild[i] = new MyOctant;
 	}
 }
+MyOctant::MyOctant(vector3 m_v3Size)
+{
+
+}
 //The big 3
 MyOctant::MyOctant(){Init();}
 MyOctant::MyOctant(MyOctant const& other)

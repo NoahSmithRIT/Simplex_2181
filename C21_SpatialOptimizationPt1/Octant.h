@@ -27,6 +27,7 @@ public:
 	void Display(void);
 	void IsColliding(void);
 	void Subdivide(void);
+	MyOctant(vector3 m_v3Size);
 	/*
 	Usage: Constructor
 	Arguments: ---
