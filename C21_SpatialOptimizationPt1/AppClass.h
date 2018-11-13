@@ -12,12 +12,15 @@ Date: 2017/06
 
 #include "MyEntityManager.h"
 
+#include "Octant.h"
+
 namespace Simplex
 {
 	//Adding Application to the Simplex namespace
 class Application
 {
 	MyEntityManager* m_pEntityMngr = nullptr; //Entity Manager
+	MyOctant* m_pRoot = nullptr;
 		
 private:
 	String m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu"; //programmer
