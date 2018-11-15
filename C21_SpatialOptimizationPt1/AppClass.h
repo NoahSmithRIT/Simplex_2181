@@ -11,8 +11,7 @@ Date: 2017/06
 #include "imgui\ImGuiObject.h"
 
 #include "MyEntityManager.h"
-
-#include "Octant.h"
+#include "MyOctant.h"
 
 namespace Simplex
 {
