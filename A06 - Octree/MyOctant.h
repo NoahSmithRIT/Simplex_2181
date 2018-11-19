@@ -24,10 +24,19 @@ namespace Simplex
 		MyOctant* m_pParent = nullptr;
 		MyOctant* m_pChild[8];
 		uint m_nLevel = 0;
+
+		bool visiblePlanes = true; // planes representing spatial optimization are visible
+		int numDimensions = 0; // variable holding the current number of dimensions
+
 	public:
 		void Display(void);
 		void IsColliding(void);
-		void Subdivide(void);
+		void Subdivide();
+		void ChangeDimension(int current, bool positive); // increment or decrement numDimensions
+		int GetDimension(void); // get value of numDimensions
+		void ClearChildren(void); // delete children outside of Release
+		void ToggleVisible(bool toggle); // change value of visiblePlanes
+
 		MyOctant(vector3 a_v3Center, float a_fSize);
 		/*
 		Usage: Constructor

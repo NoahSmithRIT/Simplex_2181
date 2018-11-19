@@ -48,7 +48,7 @@ MyOctant::MyOctant(vector3 a_v3Center, float a_fSize)
 
 void MyOctant::Subdivide()
 {
-	if (m_nLevel > 3)
+	if (m_nLevel > numDimensions) // change this to change number of subdivisons: 0 is split into 4, 1 is 8, etc.
 		return;
 
 	vector3 v3Center = m_pRigidBody->GetCenterLocal();
@@ -70,8 +70,44 @@ void MyOctant::Subdivide()
 	{
 		m_pChild[i]->m_nLevel = m_nLevel + 1;
 		m_pChild[i]->m_pParent = this;
+		m_pChild[i]->numDimensions = numDimensions;
 		m_pChild[i]->Subdivide();
 	}
+}
+
+void Simplex::MyOctant::ChangeDimension(int current, bool positive)
+{
+	int newDimension = current;
+	if (positive)
+		newDimension++;
+	else if (!positive)
+		newDimension--;
+	if (newDimension <= 0)
+		newDimension = 0;
+	if (newDimension >= 3)
+		newDimension = 3;
+	numDimensions = newDimension;
+}
+
+int Simplex::MyOctant::GetDimension(void)
+{
+	return numDimensions;
+}
+
+void Simplex::MyOctant::ClearChildren(void)
+{
+	for (uint i = 0; i < 8; i++)
+	{
+		SafeDelete(m_pChild[i]);
+	}
+}
+
+void Simplex::MyOctant::ToggleVisible(bool toggle)
+{
+	if (toggle)
+		visiblePlanes = true;
+	if (!toggle)
+		visiblePlanes = false;
 }
 
 void MyOctant::Swap(MyOctant& other)
@@ -82,14 +118,21 @@ void MyOctant::Swap(MyOctant& other)
 void MyOctant::Release(void)
 {
 	m_lData.clear();
+	for (uint i = 0; i < 8; i++)
+	{
+		SafeDelete(m_pChild[i]);
+	}
 }
 void Simplex::MyOctant::Display(void)
 {
-	m_pRigidBody->AddToRenderList();
-	for (uint i = 0; i < 8; i++)
+	if (visiblePlanes)
 	{
-		if (m_pChild[i])
-			m_pChild[i]->Display();
+		m_pRigidBody->AddToRenderList();
+		for (uint i = 0; i < 8; i++)
+		{
+			if (m_pChild[i])
+				m_pChild[i]->Display();
+		}
 	}
 	//m_pMeshMngr->AddWireCubeToRenderList(glm::scale(vector3(70)), C_BLUE);
 }
